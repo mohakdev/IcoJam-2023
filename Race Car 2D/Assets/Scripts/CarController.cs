@@ -1,19 +1,18 @@
+using RadiantTools.AudioSystem;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
     [Header("Car Settings")]
-    [SerializeField] float accelerationPower = 30;
-    [SerializeField] float turnPower = 3;
-    [SerializeField] int maxVelocity;
+    public float accelerationPower = 30;
+    public float turnPower = 3;
+    public int maxVelocity;
     [SerializeField] float driftFactor = 0.8f;
     [Header("References")]
     [SerializeField] TrailRenderer[] skidRenderers;
  
-    float accelerationInput; //Lies b/w 0 to 1
+    [NonSerialized] public float accelerationInput; //Lies b/w 0 to 1
     float steeringInput; //Lies b/w 0 to 1
     //Additional Variables
     float rotationAngle;
@@ -68,18 +67,27 @@ public class CarController : MonoBehaviour
         rbCar.AddForce(engineForce, ForceMode2D.Force);
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (gameObject.CompareTag("EnemyCar")) { return; }
+        AudioManager.Instance.PlayAudio(AudioManager.SoundTypes.CollisionSound);    
+    }
+
     public void DriftTires(bool drift)
     {
         if (drift)
         {
             turnPower *= 1.6f;
             accelerationPower /= 1.2f;
+            
+            AudioManager.Instance.PlayAudio(AudioManager.SoundTypes.DriftSound);
             SetSkidmarksTrail(true);
         }
         else
         {
             turnPower /= 1.6f;
             accelerationPower *= 1.2f;
+            
             SetSkidmarksTrail(false);
         }
     }

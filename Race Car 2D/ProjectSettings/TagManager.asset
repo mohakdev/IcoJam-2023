@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Map
+  - EnemyCar
+  - RaceManager
   layers:
   - Default
   - TransparentFX
@@ -12,7 +15,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Map
   - 
   - 
   - 
