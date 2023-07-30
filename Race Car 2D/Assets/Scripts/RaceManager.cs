@@ -6,12 +6,18 @@ using UnityEngine.UI;
 
 public class RaceManager : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] LapDetector mainLapCollider;
     [SerializeField] CarController[] carControllers;
     [SerializeField] Text lapLabel;
+    [SerializeField] GameObject victoryUI;
+    [SerializeField] Text victoryTime;
+    [SerializeField] Text bestTime;
+    [SerializeField] GameObject defeatUI;
     [SerializeField] GameObject startScreen;
     Text readyGoLabel;
     Timer timer;
+
     public int lapsCompleted = 0;
     void Start()
     {
@@ -27,7 +33,7 @@ public class RaceManager : MonoBehaviour
         ChangeCarsState(false);
         startScreen.SetActive(false);
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
         AudioManager.Instance.PlayAudio(AudioManager.SoundTypes.ReadyGo);
 
         startScreen.SetActive(true);
@@ -84,14 +90,18 @@ public class RaceManager : MonoBehaviour
     }
     public void RaceFinished(bool victory)
     {
+        GameObject.FindWithTag("Player").GetComponentInChildren<AudioSource>().enabled = false;
         Time.timeScale = 0;
         if (victory)
         {
-            Debug.Log("You Won");
+            if (timer.CurrentTime < timer.BestTime || timer.BestTime == 0) { timer.SetBestTime(timer.CurrentTime); }
+            victoryUI.SetActive(true);
+            victoryTime.text = "Current Time: " + timer.DisplayTime(timer.CurrentTime);
+            bestTime.text = "Best Time: " + timer.DisplayTime(timer.BestTime);
         }
         else
         {
-            Debug.Log("You Lost");
+            defeatUI.SetActive(true);
         }
     }
 
